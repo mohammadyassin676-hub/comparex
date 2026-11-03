@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparex - مقارنة المواصفات</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Comparex - مقارنة جميع الأجهزة عالمياً</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -12,7 +11,6 @@
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text: #1e293b;
-            --gray: #64748b;
         }
         body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; }
         .container { max-width: 850px; margin: auto; }
@@ -29,7 +27,7 @@
         
         .recommendation-box { background: #ecfdf5; border: 2px solid #34d399; color: #065f46; padding: 15px; border-radius: 14px; margin-top: 20px; display: none; text-align: right; }
         .recommendation-box h3 { margin: 0 0 5px 0; color: var(--success); }
-        .error-box { background-color: #fee2e2; color: #991b1b; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 13px; display: none; text-align: right; }
+        .loading { text-align: center; color: var(--primary); font-weight: bold; display: none; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -37,25 +35,24 @@
     <div class="container">
         <header>
             <h1>Comparex 📱💻</h1>
-            <p>مقارنة ذكية وشاملة للمواصفات</p>
+            <p>مقارنة شاملة لجميع الأجهزة الذكية عالمياً</p>
         </header>
 
         <div class="selection-box">
             <label style="display:block; text-align:right; font-weight:bold; margin-bottom:4px;">الجهاز الأول:</label>
             <select id="device1">
-                <option value="">-- اختر الجهاز الأول --</option>
+                <option value="">-- جاري تحميل قائمة الأجهزة... --</option>
             </select>
 
             <label style="display:block; text-align:right; font-weight:bold; margin-top:12px; margin-bottom:4px;">الجهاز الثاني:</label>
             <select id="device2">
-                <option value="">-- اختر الجهاز الثاني --</option>
+                <option value="">-- جاري تحميل قائمة الأجهزة... --</option>
             </select>
 
             <button class="btn-action" onclick="compareDevices()">عرض المقارنة الشاملة</button>
-            <div id="errorBox" class="error-box"></div>
+            <div id="loading" class="loading">⏳ جاري جلب المواصفات التفصيلية...</div>
         </div>
 
-        <!-- صندوق التوصية الذكية -->
         <div id="recommendationBox" class="recommendation-box">
             <h3>🏆 خلاصة المقارنة والتوصية الفنية:</h3>
             <p id="recText">-</p>
@@ -95,113 +92,107 @@
                     <td id="battery1">-</td>
                     <td id="battery2">-</td>
                 </tr>
-                <tr>
-                    <td>الفئة</td>
-                    <td id="cat1">-</td>
-                    <td id="cat2">-</td>
-                </tr>
             </tbody>
         </table>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://njsudqbqqjdogletstaz.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qc3VkcWJxcWpkb2dsZXRzdGF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MDE2MzcsImV4cCI6MjEwOTI3NzYzN30.EKdlXfLK7W1OFtOid5qt89UBn-XzRbGwxbgoR_FOopM';
-        
-        let supabaseClient;
-        try {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (e) {
-            console.error("Supabase Init Error:", e);
-        }
+        const API_BASE = 'https://phone-specs-api.azharimm.dev/v2';
+        let allPhones = [];
 
-        let allDevices = [];
-
-        async function loadDeviceList() {
+        // جلب قائمة أشهر الأجهزة العالمية عند فتح الصفحة
+        async function fetchAllDevices() {
             try {
-                if (!supabaseClient) throw new Error("فشل تهيئة عميل Supabase");
+                // جلب قائمة الأجهزة الحديثة من الماركات الشهيرة
+                const res = await fetch(`${API_BASE}/top-by-interest`);
+                const json = await res.json();
+                allPhones = json.data.phones || [];
 
-                const { data, error } = await supabaseClient
-                    .from('devices')
-                    .select('*');
-
-                if (error) throw error;
-
-                allDevices = data || [];
-                
                 const select1 = document.getElementById('device1');
                 const select2 = document.getElementById('device2');
 
                 select1.innerHTML = '<option value="">-- اختر الجهاز الأول --</option>';
                 select2.innerHTML = '<option value="">-- اختر الجهاز الثاني --</option>';
 
-                allDevices.forEach(device => {
+                allPhones.forEach(phone => {
                     const opt1 = document.createElement('option');
-                    opt1.value = device.id;
-                    opt1.textContent = device.name;
+                    opt1.value = phone.slug;
+                    opt1.textContent = phone.phone_name;
                     select1.appendChild(opt1);
 
                     const opt2 = document.createElement('option');
-                    opt2.value = device.id;
-                    opt2.textContent = device.name;
+                    opt2.value = phone.slug;
+                    opt2.textContent = phone.phone_name;
                     select2.appendChild(opt2);
                 });
             } catch (err) {
-                console.error("Error loading devices:", err);
-                const errorBox = document.getElementById('errorBox');
-                errorBox.style.display = 'block';
-                errorBox.innerText = "خطأ في الاتصال: " + (err.message || "تأكد من إعدادات قاعدة البيانات");
+                console.error("فشل جلب الأجهزة من الـ API:", err);
             }
         }
 
-        function compareDevices() {
-            const id1 = document.getElementById('device1').value;
-            const id2 = document.getElementById('device2').value;
+        async function getPhoneDetails(slug) {
+            const res = await fetch(`${API_BASE}/${slug}`);
+            const json = await res.json();
+            return json.data;
+        }
 
-            if (!id1 || !id2) {
+        async function compareDevices() {
+            const slug1 = document.getElementById('device1').value;
+            const slug2 = document.getElementById('device2').value;
+
+            if (!slug1 || !slug2) {
                 alert("برجاء اختيار الجهازين من القائمة للمقارنة!");
                 return;
             }
 
-            const item1 = allDevices.find(d => d.id == id1);
-            const item2 = allDevices.find(d => d.id == id2);
+            document.getElementById('loading').style.display = 'block';
 
-            if (!item1 || !item2) return;
+            try {
+                const [d1, d2] = await Promise.all([
+                    getPhoneDetails(slug1),
+                    getPhoneDetails(slug2)
+                ]);
 
-            // تعبئة بيانات الجدول بدون أسعار
-            document.getElementById('name1').innerText = item1.name.toUpperCase();
-            document.getElementById('name2').innerText = item2.name.toUpperCase();
+                document.getElementById('name1').innerText = d1.phone_name;
+                document.getElementById('name2').innerText = d2.phone_name;
 
-            document.getElementById('screen1').innerText = item1.screen || "-";
-            document.getElementById('screen2').innerText = item2.screen || "-";
+                // استخراج المواصفات الفنية
+                const getSpec = (data, title) => {
+                    const specGroup = data.specifications.find(s => s.title.toLowerCase().includes(title.toLowerCase()));
+                    if (!specGroup) return "-";
+                    return specGroup.specs.map(s => s.val.join(', ')).join(' | ');
+                };
 
-            document.getElementById('cpu1').innerText = item1.cpu || "-";
-            document.getElementById('cpu2').innerText = item2.cpu || "-";
+                document.getElementById('screen1').innerText = getSpec(d1, 'Display');
+                document.getElementById('screen2').innerText = getSpec(d2, 'Display');
 
-            document.getElementById('ram1').innerText = item1.ram || "-";
-            document.getElementById('ram2').innerText = item2.ram || "-";
+                document.getElementById('cpu1').innerText = getSpec(d1, 'Platform');
+                document.getElementById('cpu2').innerText = getSpec(d2, 'Platform');
 
-            document.getElementById('cam1').innerText = item1.cam || "-";
-            document.getElementById('cam2').innerText = item2.cam || "-";
+                document.getElementById('ram1').innerText = getSpec(d1, 'Memory');
+                document.getElementById('ram2').innerText = getSpec(d2, 'Memory');
 
-            document.getElementById('battery1').innerText = item1.battery || "-";
-            document.getElementById('battery2').innerText = item2.battery || "-";
+                document.getElementById('cam1').innerText = getSpec(d1, 'Main Camera');
+                document.getElementById('cam2').innerText = getSpec(d2, 'Main Camera');
 
-            document.getElementById('cat1').innerText = item1.category || "-";
-            document.getElementById('cat2').innerText = item2.category || "-";
+                document.getElementById('battery1').innerText = getSpec(d1, 'Battery');
+                document.getElementById('battery2').innerText = getSpec(d2, 'Battery');
 
-            // تحليل فني ذكي للمقارنة بناءً على المعالج والشاشة والكاميرا
-            let recommendation = `بالمقارنة التقنية بين <strong>${item1.name.toUpperCase()}</strong> و <strong>${item2.name.toUpperCase()}</strong>:`;
-            recommendation += ` يتميز كل جهاز بقوة أداء تخدم احتياجات مختلفة. راجع تفاصيل المعالج والشاشة والكاميرا بالأعلى لتحديد الجهاز الذي يلبي احتياجاتك بدقة وسلاسة.`;
-            
-            document.getElementById('recText').innerHTML = recommendation;
+                // التوصية
+                let rec = `مقارنة بين <strong>${d1.phone_name}</strong> و <strong>${d2.phone_name}</strong>: `;
+                rec += `تأكد من مراجعة تفاصيل الشاشة، المعالج، والبطارية بالأعلى لتحديد الخيار الأمثل حسب استخدامك الشخصي.`;
+                document.getElementById('recText').innerHTML = rec;
 
-            // إظهار الجدول وصندوق التوصية
-            document.getElementById('resultTable').style.display = "table";
-            document.getElementById('recommendationBox').style.display = "block";
+                document.getElementById('resultTable').style.display = "table";
+                document.getElementById('recommendationBox').style.display = "block";
+            } catch (err) {
+                alert("حدث خطأ أثناء تحميل بيانات المواصفات، حاول مرة أخرى.");
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
-        window.onload = loadDeviceList;
+        window.onload = fetchAllDevices;
     </script>
 </body>
 </html>
