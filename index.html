@@ -50,10 +50,6 @@
             margin-bottom: 20px;
             outline: none;
         }
-        .search-box:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
         .comparison-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -87,6 +83,24 @@
             font-weight: bold;
             cursor: pointer;
         }
+        .results-list {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: -10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+        .result-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+        }
+        .result-item:hover {
+            background-color: #f8fafc;
+        }
     </style>
 </head>
 <body>
@@ -98,25 +112,96 @@
 
     <div class="container">
         <!-- شريط البحث -->
-        <input type="text" class="search-box" placeholder="ابحث عن جهاز (هاتف، لابتوب...)...">
+        <input type="text" id="search" class="search-box" placeholder="ابحث عن هاتف (اكتب سامسونج، ايفون...)..." oninput="filterDevices()">
+        
+        <!-- نتائج البحث المنسدلة -->
+        <div id="results" class="results-list"></div>
 
         <!-- خانات المقارنة السريعة -->
         <div class="comparison-grid">
-            <div class="device-card">
+            <div class="device-card" id="slot1">
                 <div style="font-size: 40px;">📱</div>
                 <h3>الجهاز الأول</h3>
-                <span>اختر للمقارنة</span>
+                <span>لم يتم الاختيار</span>
             </div>
-            <div class="device-card">
+            <div class="device-card" id="slot2">
                 <div style="font-size: 40px;">📱</div>
                 <h3>الجهاز الثاني</h3>
-                <span>اختر للمقارنة</span>
+                <span>لم يتم الاختيار</span>
             </div>
         </div>
 
         <!-- زر تنفيذ المقارنة -->
-        <button class="btn-compare">بدء المقارنة</button>
+        <button class="btn-compare" onclick="startComparison()">بدء المقارنة</button>
     </div>
+
+    <script>
+        // عينة من الأجهزة للتجربة
+        const devices = [
+            { name: "iPhone 15 Pro Max", brand: "Apple", ram: "8 GB", price: "50,000 ج.م" },
+            { name: "Samsung Galaxy S24 Ultra", brand: "Samsung", ram: "12 GB", price: "48,000 ج.م" },
+            { name: "Xiaomi 14 Pro", brand: "Xiaomi", ram: "12 GB", price: "35,000 ج.م" }
+        ];
+
+        let selectedDevices = [];
+
+        function filterDevices() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const resultsDiv = document.getElementById('results');
+            
+            if (query.trim() === "") {
+                resultsDiv.style.display = "none";
+                return;
+            }
+
+            const filtered = devices.filter(d => d.name.toLowerCase().includes(query));
+            
+            if (filtered.length === 0) {
+                resultsDiv.style.display = "none";
+                return;
+            }
+
+            resultsDiv.innerHTML = "";
+            filtered.forEach(device => {
+                const item = document.createElement('div');
+                item.className = "result-item";
+                item.innerText = device.name + " - " + device.price;
+                item.onclick = () => selectDevice(device);
+                resultsDiv.appendChild(item);
+            });
+
+            resultsDiv.style.display = "block";
+        }
+
+        function selectDevice(device) {
+            if (selectedDevices.length >= 2) {
+                selectedDevices = []; // إعادة تعيين لو اخترنا اتنين
+            }
+            selectedDevices.push(device);
+            
+            document.getElementById('search').value = "";
+            document.getElementById('results').style.display = "none";
+            
+            updateUI();
+        }
+
+        function updateUI() {
+            if (selectedDevices[0]) {
+                document.getElementById('slot1').innerHTML = `<h3>${selectedDevices[0].name}</h3><span>${selectedDevices[0].price}</span>`;
+            }
+            if (selectedDevices[1]) {
+                document.getElementById('slot2').innerHTML = `<h3>${selectedDevices[1].name}</h3><span>${selectedDevices[1].price}</span>`;
+            }
+        }
+
+        function startComparison() {
+            if (selectedDevices.length < 2) {
+                alert("الرجاء اختيار جهازين للمقارنة أولاً!");
+                return;
+            }
+            alert(`جاري مقارنة: ${selectedDevices[0].name} مع ${selectedDevices.name}`);
+        }
+    </script>
 
 </body>
 </html>
