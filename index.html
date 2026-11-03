@@ -12,18 +12,19 @@
             --text: #1e293b;
             --gray: #64748b;
         }
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; }
         .container { max-width: 800px; margin: auto; }
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { color: var(--primary); margin-bottom: 10px; }
+        header { text-align: center; margin-bottom: 20px; }
+        h1 { color: var(--primary); margin-bottom: 5px; }
         .selection-box { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
-        select, input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 16px; outline: none; box-sizing: border-box; }
+        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; outline: none; box-sizing: border-box; }
         select:focus, input:focus { border-color: var(--primary); }
-        .btn-compare { background-color: var(--primary); color: white; border: none; width: 90%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 30px; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
-        th, td { padding: 16px; text-align: center; border-bottom: 1px solid #f1f5f9; }
-        th { background-color: var(--primary); color: white; }
-        .price-row { font-weight: bold; font-size: 18px; color: var(--primary); }
+        .btn-compare { background-color: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        th { background-color: var(--primary); color: white; font-size: 15px; }
+        .price-row { font-weight: bold; font-size: 16px; color: var(--primary); }
+        .hint { font-size: 12px; color: var(--gray); text-align: right; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -39,31 +40,15 @@
                 <option value="">-- اختر الفئة المراد مقارنتها --</option>
                 <option value="mobiles">موبايلات</option>
                 <option value="laptops">لابتوبات</option>
-                <option value="appliances">أجهزة كهربائية</option>
             </select>
 
-            <div id="inputs" style="display: none;">
-                <input type="text" id="device1" placeholder="اكتب اسم الموديل الأول (مثل: iphone 15)...">
-                <input type="text" id="device2" placeholder="اكتب اسم الموديل الثاني (مثل: samsung s23)...">
+            <div id="inputs" style="display: none; margin-top: 15px;">
+                <input type="text" id="device1" placeholder="اكتب الموديل الأول (مثال: iphone 15)...">
+                <input type="text" id="device2" placeholder="اكتب الموديل الثاني (مثال: samsung s24 ultra)...">
+                <div class="hint">* أمثلة للموبايلات في قاعدة البيانات: iphone 15, iphone 14 pro, samsung s24 ultra, samsung s23, xiaomi 13T, realme 11 pro</div>
                 <button class="btn-compare" onclick="compare()">عرض المقارنة</button>
             </div>
         </div>
 
         <table id="resultTable">
             <thead>
-                <tr>
-                    <th>المواصفات</th>
-                    <th id="name1">الجهاز الأول</th>
-                    <th id="name2">الجهاز الثاني</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>السعر</td>
-                    <td id="price1" class="price-row">-</td>
-                    <td id="price2" class="price-row">-</td>
-                </tr>
-                <tr>
-                    <td>المعالج</td>
-                    <td id="cpu1">-</td>
-                    <td id="cpu2">-</td>
