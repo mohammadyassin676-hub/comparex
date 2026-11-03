@@ -3,50 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comparex - مقارنة الأجهزة</title>
+<title>Comparex | مقارنة الأجهزة بالأرقام</title>
 <style>
-:root{--primary:#2563eb;--bg:#f8fafc;--card:#fff;--text:#1e293b;--gray:#64748b;--win:#dcfce7;--line:#e2e8f0}
-@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--gray:#94a3b8;--win:#14532d;--line:#334155}}
+:root{--pri:#4f46e5;--pri2:#7c3aed;--bg:#f1f5f9;--card:#fff;--text:#0f172a;--gray:#64748b;--win:#dcfce7;--wint:#166534;--line:#e2e8f0;--a:#4f46e5;--b:#f59e0b}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1020;--card:#161d33;--text:#f1f5f9;--gray:#94a3b8;--win:#14532d;--wint:#bbf7d0;--line:#27304d}}
 *{box-sizing:border-box}
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:16px}
-.wrap{max-width:760px;margin:auto}
-h1{color:var(--primary);text-align:center;margin:8px 0 4px}
-.sub{text-align:center;color:var(--gray);margin:0 0 18px}
-.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-select,input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:var(--card);color:var(--text);outline:none}
-input:focus,select:focus{border-color:var(--primary)}
-#inputs{display:none;margin-top:12px}
+body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg);color:var(--text);margin:0}
+.hero{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;text-align:center;padding:28px 16px 64px}
+.hero h1{margin:0 0 6px;font-size:28px}.hero p{margin:0;opacity:.85;font-size:14px}
+.wrap{max-width:820px;margin:-44px auto 32px;padding:0 14px}
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,.08);margin-bottom:14px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.tabs button{padding:12px;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:12px;font-size:15px;cursor:pointer;font-weight:600}
+.tabs button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .field{position:relative}
-.sug{position:absolute;top:100%;right:0;left:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:4px;box-shadow:0 6px 16px rgba(0,0,0,.12);overflow:hidden}
-.sug div{padding:10px 12px;cursor:pointer;font-size:14px}
-.sug div:hover{background:var(--bg)}
+input{width:100%;padding:13px;border:2px solid var(--line);border-radius:12px;font-size:15px;background:var(--card);color:var(--text);outline:none}
+.field:nth-child(1) input:focus{border-color:var(--a)}.field:nth-child(2) input:focus{border-color:var(--b)}
+.sug{position:absolute;top:100%;right:0;left:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:4px;box-shadow:0 10px 24px rgba(0,0,0,.18);overflow:hidden}
+.sug div{padding:11px 12px;cursor:pointer;font-size:14px}.sug div:hover{background:var(--bg)}
 .note{font-size:12px;color:var(--gray);margin:6px 2px 0;min-height:16px}
-.tw{overflow-x:auto;margin-top:12px}
-table{width:100%;border-collapse:collapse}
+.empty{text-align:center;color:var(--gray);padding:26px 0 8px;font-size:14px}
+.verdict{border:2px solid var(--pri);background:linear-gradient(135deg,rgba(79,70,229,.08),rgba(124,58,237,.08))}
+.verdict h2{margin:0 0 6px;font-size:13px;color:var(--gray);font-weight:600}
+.verdict .w{font-size:22px;font-weight:800;color:var(--pri);margin-bottom:6px}
+.verdict p{margin:4px 0;font-size:14px;line-height:1.7}
+.fine{font-size:11px;color:var(--gray);margin-top:8px}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center;margin-bottom:12px}
+.big{font-size:34px;font-weight:800}.sa{color:var(--a)}.sb{color:var(--b)}
+.ax{margin:10px 0}.ax .l{display:flex;justify-content:space-between;font-size:13px;color:var(--gray);margin-bottom:4px}
+.bar{display:flex;gap:4px;height:9px}.bar i{display:block;border-radius:5px;min-width:2px}
+.bar .ba{background:var(--a)}.bar .bb{background:var(--b)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}
 th,td{padding:12px 8px;text-align:center;border-bottom:1px solid var(--line);font-size:14px}
-th{color:var(--primary)}
-td:first-child{color:var(--gray);width:25%}
-td.win{background:var(--win);font-weight:bold}
-.empty{text-align:center;color:var(--gray);padding:20px 0 6px;font-size:14px}
+th.a{color:var(--a)}th.b{color:#d97706}
+td:first-child{color:var(--gray);width:24%;font-size:13px}
+td.win{background:var(--win);color:var(--wint);font-weight:700}
 </style>
 </head>
 <body>
+<div class="hero"><h1>Comparex 📱💻</h1><p>قارن بين أي جهازين بالأرقام واعرف الأفضل</p></div>
 <div class="wrap">
-  <h1>Comparex 📱💻</h1>
-  <p class="sub">اختار القسم واكتب اسم الجهازين بأي شكل بسيط</p>
   <div class="card">
-    <select id="cat">
-      <option value="">اختار القسم...</option>
-      <option value="mobiles">موبايلات</option>
-      <option value="laptops">لابتوبات</option>
-    </select>
-    <div id="inputs">
-      <div class="pick">
-        <div class="field"><input id="a" placeholder="الجهاز الأول (مثال: s24)" autocomplete="off"><div class="sug" id="sa" hidden></div><div class="note" id="na"></div></div>
-        <div class="field"><input id="b" placeholder="الجهاز الثاني (مثال: ايفون 15)" autocomplete="off"><div class="sug" id="sb" hidden></div><div class="note" id="nb"></div></div>
-      </div>
-      <div class="tw" id="out"></div>
+    <div class="tabs"><button data-c="mobiles" class="on">📱 موبايلات</button><button data-c="laptops">💻 لابتوبات</button></div>
+    <div class="pick">
+      <div class="field"><input id="a" autocomplete="off"><div class="sug" id="sa" hidden></div><div class="note" id="na"></div></div>
+      <div class="field"><input id="b" autocomplete="off"><div class="sug" id="sb" hidden></div><div class="note" id="nb"></div></div>
     </div>
   </div>
+  <div id="out"></div>
 </div>
+<script>
+// ===== البيانات (أرقام تقريبية) — perf = Geekbench 6 multi-core تقريبي =====
+// موبايل: اسم، أسماء بديلة، سنة، شاشة"، Hz، perf، معالج، رام، تخزين، كاميرا MP، بطارية mAh، شحن W، وزن جم
+const M = [
+["iPhone 16","ايفون ابل apple 16",2024,6.1,60,8000,"A18",8,128,48,3561,25,170],
+["iPhone 15 Pro","ايفون ابل apple 15pro برو",2023,6.1,120,7200,"A17 Pro",8,128,48,3274,27,187],
+["iPhone 15","ايفون ابل apple",2023,6.1,60,5400,"A16 Bionic",6,128,48,3349,20,171],
+["iPhone 14 Pro","ايفون ابل apple 14pro برو",2022,6.1,120,5400,"A16 Bionic",6,128,48,3200,20,206],
+["Samsung S25 Ultra","سامسونج جالاكسي galaxy الترا",2025,6.9,120,9500,"Snapdragon 8 Elite",12,256,200,5000,45,218],
+["Samsung S24 Ultra","سامسونج جالاكسي galaxy الترا",2024,6.8,120,7000,"Snapdragon 8 Gen 3",12,256,200,5000,45,232],
+["Samsung S23","سامسونج جالاكسي galaxy",2023,6.1,120,5200,"Snapdragon 8 Gen 2",8,128,50,3900,25,168],
+["Samsung A54","سامسونج جالاكسي galaxy ايه",2023,6.4,120,2900,"Exynos 1380",8,128,50,5000,25,202],
+["Google Pixel 8","جوجل بيكسل pixel",2023,6.2,120,4400,"Tensor G3",8,128,50,4575,27,187],
+["Xiaomi 13T","شاومي redmi mi",2023,6.67,144,4000,"Dimensity 8200 Ultra",12,256,50,5000,67,193],
+["Poco F5","شاومي بوكو xiaomi",2023,6.67,120,4200,"Snapdragon 8+ Gen 1",8,256,64,5000,67,181],
+["Realme 11 Pro","ريلمي",2023,6.7,120,2900,"Dimensity 7050",8,256,100,5000,67,183]
+].map(r=>({name:r[0],alias:r[1],year:r[2],inch:r[3],hz:r[4],perf:r[5],cpu:r[6],ram:r[7],sto:r[8],cam:r[9],bat:r[10],w:r[11],g:r[12]}));
+// لابتوب: اسم، بدائل، سنة، شاشة"، Hz، perf، معالج، رام، SSD، بطارية Wh، وزن كجم
+const L = [
+["MacBook Air M3","ماك بوك ماك ابل apple ايير",2024,13.6,60,11800,"Apple M3",8,256,52.6,1.24],
+["MacBook Air M2","ماك بوك ماك ابل apple ايير",2022,13.6,60,8900,"Apple M2",8,256,52.6,1.24],
+["Dell XPS 13","ديل اكس بي اس",2023,13.4,60,9000,"Core i7-1360P",16,512,51,1.17],
+["ThinkPad X1 Carbon","لينوفو ثينك باد lenovo",2023,14,60,8000,"Core i7-1355U",16,512,57,1.12],
+["ASUS ROG Zephyrus G14","اسوس روج asus جيمنج",2023,14,165,12500,"Ryzen 9 7940HS",16,1024,73,1.65]
+].map(r=>({name:r[0],alias:r[1],year:r[2],inch:r[3],hz:r[4],perf:r[5],cpu:r[6],ram:r[7],sto:r[8],wh:r[9],kg:r[10]}));
+
+const n=(v,lo,hi)=>Math.max(0,Math.min(1,(v-lo)/(hi-lo)));
+const CATS={
+ mobiles:{data:M,ph:["s25","ايفون 15"],
+  rows:[["الشاشة",d=>`${d.inch}" • ${d.hz}Hz`,d=>d.hz],["المعالج",d=>`${d.cpu}<br><small>${d.perf} نقطة</small>`,d=>d.perf],["الرام",d=>d.ram+"GB",d=>d.ram],["التخزين",d=>d.sto+"GB",d=>d.sto],["الكاميرا الرئيسية",d=>d.cam+" م.ب",d=>d.cam],["البطارية",d=>d.bat+" mAh",d=>d.bat],["الشحن السريع",d=>d.w+"W",d=>d.w],["الوزن",d=>d.g+" جم",d=>d.g,1],["سنة الإصدار",d=>d.year,d=>d.year]],
+  axes:[["الأداء",d=>n(d.perf,2500,9500),.30],["البطارية والشحن",d=>.7*n(d.bat,3000,5500)+.3*n(d.w,15,70),.25],["الشاشة",d=>.6*n(d.hz,60,144)+.4*n(d.inch,6,6.9),.15],["الذاكرة",d=>.6*n(d.ram,4,16)+.4*n(d.sto,64,512),.20],["الكاميرا (حسب الأرقام)",d=>n(Math.sqrt(d.cam),4,14.2),.10]]},
+ laptops:{data:L,ph:["macbook","dell"],
+  rows:[["الشاشة",d=>`${d.inch}" • ${d.hz}Hz`,d=>d.hz],["المعالج",d=>`${d.cpu}<br><small>${d.perf} نقطة</small>`,d=>d.perf],["الرام",d=>d.ram+"GB",d=>d.ram],["التخزين SSD",d=>d.sto+"GB",d=>d.sto],["البطارية",d=>d.wh+" Wh",d=>d.wh],["الوزن",d=>d.kg+" كجم",d=>d.kg,1],["سنة الإصدار",d=>d.year,d=>d.year]],
+  axes:[["الأداء",d=>n(d.perf,6000,13000),.35],["البطارية",d=>n(d.wh,45,75),.25],["الذاكرة",d=>.6*n(d.ram,8,32)+.4*n(d.sto,256,1024),.20],["خفة الوزن",d=>n(1.8-d.kg,0,.8),.10],["الشاشة",d=>.5*n(d.hz,60,165)+.5*n(d.inch,13,16),.10]]}
+};
+const $=id=>document.getElementById(id);
+let cat="mobiles",pick={a:null,b:null};
+const norm=s=>s.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/[^a-z0-9\u0600-\u06ff ]/g," ").replace(/\s+/g," ").trim();
+
+function search(q){
+  q=norm(q); if(!q) return [];
+  const t=q.split(" "),c=q.replace(/ /g,"");
+  return CATS[cat].data.map(d=>{
+    const h=norm(d.name+" "+d.alias),hc=h.replace(/ /g,"");
+    if(!(t.every(x=>h.includes(x))||hc.includes(c))) return null;
+    return {d,s:(norm(d.name).startsWith(q)?0:1)+d.name.length/100};
+  }).filter(Boolean).sort((x,y)=>x.s-y.s).map(r=>r.d);
+}
+function onType(k){
+  const q=$(k).value,res=search(q),box=$("s"+k);
+  pick[k]=res[0]||null;
+  $("n"+k).textContent=q.trim()?(res.length?"✔ "+res[0].name:"مفيش جهاز بالاسم ده"):"";
+  box.innerHTML=res.length>1?res.slice(0,6).map((d,i)=>`<div data-i="${i}">${d.name}</div>`).join(""):"";
+  box.hidden=res.length<=1; box._r=res; render();
+}
+["a","b"].forEach(k=>{
+  $(k).addEventListener("input",()=>onType(k));
+  $("s"+k).addEventListener("click",e=>{
+    const i=e.target.dataset.i; if(i==null) return;
+    const d=$("s"+k)._r[i]; $(k).value=d.name; pick[k]=d; $("n"+k).textContent="✔ "+d.name; $("s"+k).hidden=true; render();
+  });
+});
+document.addEventListener("click",e=>{if(!e.target.closest(".field"))document.querySelectorAll(".sug").forEach(s=>s.hidden=true)});
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  cat=b.dataset.c; document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b)); setCat();
+});
+function setCat(){
+  ["a","b"].forEach((k,i)=>{$(k).value="";$("n"+k).textContent="";pick[k]=null;$(k).placeholder=(i?"الجهاز الثاني":"الجهاز الأول")+" (مثال: "+CATS[cat].ph[i]+")"});
+  render();
+}
+function scoreOf(d){const C=CATS[cat];const ax=C.axes.map(([l,f,w])=>({l,v:f(d)*100,w}));return {ax,total:ax.reduce((s,x)=>s+x.v*x.w,0)}}
+
+function render(){
+  const A=pick.a,B=pick.b,C=CATS[cat];
+  if(!A||!B){$("out").innerHTML='<div class="card empty">اكتب اسم الجهازين بشكل مبسط وهتظهر المقارنة والتفضيل</div>';return}
+  const sa=scoreOf(A),sb=scoreOf(B),ta=Math.round(sa.total),tb=Math.round(sb.total);
+  let v;
+  if(Math.abs(ta-tb)<3){
+    v=`<div class="w">متقاربين جداً 🤝</div><p>الفرق بين الجهازين (${ta} مقابل ${tb}) صغير، فالاختيار يعتمد على أولوياتك.</p>`;
+  }else{
+    const aw=ta>tb,W=aw?A:B,Lo=aw?B:A,SW=aw?sa:sb,SL=aw?sb:sa;
+    const diffs=SW.ax.map((x,i)=>({l:x.l,d:x.v-SL.ax[i].v}));
+    const lead=diffs.filter(x=>x.d>=8).sort((x,y)=>y.d-x.d).slice(0,2).map(x=>x.l);
+    const back=diffs.filter(x=>x.d<=-8).sort((x,y)=>x.d-y.d)[0];
+    v=`<div class="w">✅ التفضيل: ${W.name}</div><p>حصل على <b>${Math.max(ta,tb)}</b> من 100 مقابل <b>${Math.min(ta,tb)}</b> لـ ${Lo.name}.</p>`+
+      (lead.length?`<p>أقوى في: ${lead.join(" و")}.</p>`:"")+
+      (back?`<p>لكن ${Lo.name} أفضل في ${back.l}.</p>`:"");
+  }
+  const cmp=C.rows.map(([lb,f,g,low])=>{
+    const x=g(A),y=g(B);let wa="",wb="";
+    if(x!==y){const aw=low?x<y:x>y;aw?wa="win":wb="win"}
+    return `<tr><td>${lb}</td><td class="${wa}">${f(A)}</td><td class="${wb}">${f(B)}</td></tr>`}).join("");
+  const bars=sa.ax.map((x,i)=>{const y=sb.ax[i];return `<div class="ax"><div class="l"><span>${Math.round(x.v)}</span><b>${x.l}</b><span>${Math.round(y.v)}</span></div><div class="bar"><i class="ba" style="flex:${x.v+1}"></i><i class="bb" style="flex:${y.v+1}"></i></div></div>`}).join("");
+  $("out").innerHTML=`
+  <div class="card verdict"><h2>التفضيل حسب الأرقام</h2>${v}<div class="fine">التقييم محسوب من المواصفات فقط (الأداء، البطارية، الشاشة، الذاكرة...) بأوزان مختلفة لكل محور، ومش بيقيس جودة الصورة أو تجربة الاستخدام الفعلية.</div></div>
+  <div class="card"><div class="scores"><div><div class="big sa">${ta}</div><div>${A.name}</div></div><div><div class="big sb">${tb}</div><div>${B.name}</div></div></div>${bars}</div>
+  <div class="card tw"><table><thead><tr><th></th><th class="a">${A.name}</th><th class="b">${B.name}</th></tr></thead><tbody>${cmp}</tbody></table><div class="fine">الأرقام تقريبية، والخانة الخضراء = الأفضل في الصف.</div></div>`;
+}
+setCat();
+</script>
+</body>
+</html>
