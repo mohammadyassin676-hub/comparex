@@ -18,14 +18,13 @@
         header { text-align: center; margin-bottom: 20px; }
         h1 { color: var(--primary); margin-bottom: 5px; }
         .selection-box { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
-        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; outline: none; box-sizing: border-box; }
-        select:focus, input:focus { border-color: var(--primary); }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; outline: none; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); }
         .btn-action { background-color: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
         th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
         th { background-color: var(--primary); color: white; font-size: 15px; }
-        .price-row { font-weight: bold; font-size: 16px; color: var(--primary); }
-        .hint { font-size: 12px; color: var(--gray); text-align: right; margin-top: 6px; line-height: 1.5; }
+        .hint { font-size: 12px; color: var(--gray); text-align: right; margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -33,68 +32,33 @@
     <div class="container">
         <header>
             <h1>Comparex 📱💻</h1>
-            <p>قارن بين الأجهزة من قاعدة البيانات مباشرة</p>
+            <p>مقارنة الأجهزة من قاعدة البيانات مباشرة</p>
         </header>
 
         <div class="selection-box">
-            <label style="display:block; margin-bottom:8px; font-weight:bold;">اختر القسم أولاً:</label>
-            <select id="category">
-                <option value="mobiles">موبايلات</option>
-                <option value="laptops">لابتوبات</option>
-            </select>
-
-            <button class="btn-action" onclick="showInputsDirectly()">تأكيد الفئة وإدخال الموديلات</button>
-
-            <div id="inputs" style="display: none; margin-top: 15px;">
-                <input type="text" id="device1" placeholder="اكتب الموديل الأول (مثال: iphone 15)...">
-                <input type="text" id="device2" placeholder="اكتب الموديل الثاني (مثال: samsung s24 ultra)...">
-                
-                <div class="hint">
-                    * تأكد من كتابة اسم الجهاز كما أضفته في جدول Supabase (مثل: iphone 15).
-                </div>
-
-                <button class="btn-action" style="background-color: #16a34a;" onclick="compareDevicesFromSupabase()">عرض المقارنة</button>
+            <input type="text" id="device1" placeholder="اكتب اسم الجهاز الأول (مثال: iphone 15)...">
+            <input type="text" id="device2" placeholder="اكتب اسم الجهاز الثاني (مثال: samsung s24 ultra)...">
+            
+            <div class="hint">
+                * تأكد من كتابة اسم الجهاز كما أضفته تماماً في Supabase.
             </div>
+
+            <button class="btn-action" onclick="compareDevices()">عرض بيانات الأجهزة</button>
         </div>
 
         <table id="resultTable">
             <thead>
                 <tr>
-                    <th>المواصفات</th>
+                    <th>المعلومة</th>
                     <th id="name1">الجهاز الأول</th>
                     <th id="name2">الجهاز الثاني</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>السعر</td>
-                    <td id="price1" class="price-row">-</td>
-                    <td id="price2" class="price-row">-</td>
-                </tr>
-                <tr>
-                    <td>الشاشة</td>
-                    <td id="screen1">-</td>
-                    <td id="screen2">-</td>
-                </tr>
-                <tr>
-                    <td>المعالج</td>
-                    <td id="cpu1">-</td>
-                    <td id="cpu2">-</td>
-                </tr>
-                <tr>
-                    <td>الرام / المساحة</td>
-                    <td id="ram1">-</td>
-                    <td id="ram2">-</td>
-                </tr>
-                <tr>
-                    <td>الكاميرا</td>
-                    <td id="cam1">-</td>
-                    <td id="cam2">-</td>
-                </tr>
-                <tr>
-                    <td>البطارية</td>
-                    <td id="battery1">-</td>
-                    <td id="battery2">-</td>
+                    <td>الفئة / القسم</td>
+                    <td id="cat1">-</td>
+                    <td id="cat2">-</td>
                 </tr>
             </tbody>
         </table>
@@ -107,12 +71,7 @@
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function showInputsDirectly() {
-            document.getElementById('inputs').style.display = "block";
-            document.getElementById('resultTable').style.display = "none";
-        }
-
-        async function compareDevicesFromSupabase() {
+        async function compareDevices() {
             const dev1Name = document.getElementById('device1').value.trim().toLowerCase();
             const dev2Name = document.getElementById('device2').value.trim().toLowerCase();
 
@@ -138,29 +97,4 @@
                 return;
             }
 
-            document.getElementById('name1').innerText = item1.name.toUpperCase();
-            document.getElementById('name2').innerText = item2.name.toUpperCase();
-
-            document.getElementById('price1').innerText = item1.price || "غير متوفر";
-            document.getElementById('price2').innerText = item2.price || "غير متوفر";
-
-            document.getElementById('screen1').innerText = item1.screen || "-";
-            document.getElementById('screen2').innerText = item2.screen || "-";
-
-            document.getElementById('cpu1').innerText = item1.cpu || "-";
-            document.getElementById('cpu2').innerText = item2.cpu || "-";
-
-            document.getElementById('ram1').innerText = item1.ram || "-";
-            document.getElementById('ram2').innerText = item2.ram || "-";
-
-            document.getElementById('cam1').innerText = item1.cam || "-";
-            document.getElementById('cam2').innerText = item2.cam || "-";
-
-            document.getElementById('battery1').innerText = item1.battery || "-";
-            document.getElementById('battery2').innerText = item2.battery || "-";
-
-            document.getElementById('resultTable').style.display = "table";
-        }
-    </script>
-</body>
-</html>
+            // عرض النت
