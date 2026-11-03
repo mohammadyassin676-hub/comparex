@@ -42,7 +42,11 @@
       border-radius: 8px;
       font-size: 15px;
       background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
     }
+    .selector select:focus { border-color: #2563eb; }
+
     .vs {
       font-weight: 800;
       color: #7c3aed;
@@ -55,19 +59,34 @@
       justify-content: center;
       margin-bottom: 20px;
     }
-    .toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+    .toggle { display: flex; align-items: center; gap: 8px; font-size: 15px; cursor: pointer; }
 
+    /* تحسينات الجدول */
     .table-wrapper {
       overflow-x: auto;
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      position: relative;
+      -webkit-overflow-scrolling: touch; /* سحب ناعم على الموبايل */
     }
+    
+    /* إضافة تلميح للسحب */
+    .scroll-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+      display: block;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
+      min-width: 600px; /* عشان الجدول ميتكسرش على الموبايل */
     }
+
+    /* تثبيت الهيدر */
     thead th {
       position: sticky;
       top: 0;
@@ -76,25 +95,46 @@
       padding: 14px 12px;
       font-size: 14px;
       text-align: center;
+      z-index: 2;
     }
-    thead th:first-child { text-align: right; }
+
+    /* تثبيت عمود المواصفات */
+    thead th:first-child {
+      position: sticky;
+      right: 0;
+      text-align: right;
+      z-index: 3;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    }
+
     tbody td {
       padding: 12px;
       border-bottom: 1px solid #e5e7eb;
       font-size: 14px;
       text-align: center;
     }
+
     tbody td:first-child {
+      position: sticky;
+      right: 0;
       text-align: right;
       font-weight: 600;
       background: #f9fafb;
+      z-index: 1;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.05);
     }
-    tbody tr:hover { background: #f0f4ff; }
+
+    tbody tr:hover td { background: #f0f4ff; }
+    tbody tr:hover td:first-child { background: #e5e7eb; }
 
     td.diff {
       background: #fef3c7;
       font-weight: 600;
       color: #92400e;
+    }
+    
+    tbody tr:hover td.diff {
+      background: #fde68a;
     }
 
     .empty-msg {
@@ -149,6 +189,7 @@
         <tbody id="tableBody"></tbody>
       </table>
     </section>
+    <span class="scroll-hint">↔️ اسحب الجدول يميناً ويساراً لرؤية كافة التفاصيل</span>
 
   </main>
 
