@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparex - مقارنة الأجهزة الإلكترونية</title>
+    <title>Comparex - منصة مقارنة الأجهزة</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -12,196 +12,58 @@
             --text: #1e293b;
             --gray: #64748b;
         }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: var(--card-bg);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        h1 {
-            margin: 0;
-            color: var(--primary);
-            font-size: 24px;
-        }
-        p.subtitle {
-            color: var(--gray);
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        .container {
-            padding: 15px;
-            max-width: 800px;
-            margin: auto;
-        }
-        .search-box {
-            width: 100%;
-            padding: 12px 15px;
-            font-size: 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-            outline: none;
-        }
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .device-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-        .device-card h3 {
-            font-size: 16px;
-            margin: 10px 0 5px;
-        }
-        .device-card span {
-            color: var(--gray);
-            font-size: 13px;
-        }
-        .btn-compare {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .results-list {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-top: -10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-            display: none;
-        }
-        .result-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f1f5f9;
-            cursor: pointer;
-        }
-        .result-item:hover {
-            background-color: #f8fafc;
-        }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--primary); margin-bottom: 10px; }
+        .selection-box { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
+        select, input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 16px; outline: none; box-sizing: border-box; }
+        select:focus, input:focus { border-color: var(--primary); }
+        .btn-compare { background-color: var(--primary); color: white; border: none; width: 90%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
+        th, td { padding: 16px; text-align: center; border-bottom: 1px solid #f1f5f9; }
+        th { background-color: var(--primary); color: white; }
+        .price-row { font-weight: bold; font-size: 18px; color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Comparex 📱</h1>
-        <p class="subtitle">قارن بين مواصفات وأسعار الأجهزة الإلكترونية بسهولة</p>
-    </header>
-
     <div class="container">
-        <!-- شريط البحث -->
-        <input type="text" id="search" class="search-box" placeholder="ابحث عن هاتف (اكتب سامسونج، ايفون...)..." oninput="filterDevices()">
-        
-        <!-- نتائج البحث المنسدلة -->
-        <div id="results" class="results-list"></div>
+        <header>
+            <h1>Comparex 📱💻</h1>
+            <p>اختر الفئة وقارن بين الأجهزة بسهولة</p>
+        </header>
 
-        <!-- خانات المقارنة السريعة -->
-        <div class="comparison-grid">
-            <div class="device-card" id="slot1">
-                <div style="font-size: 40px;">📱</div>
-                <h3>الجهاز الأول</h3>
-                <span>لم يتم الاختيار</span>
-            </div>
-            <div class="device-card" id="slot2">
-                <div style="font-size: 40px;">📱</div>
-                <h3>الجهاز الثاني</h3>
-                <span>لم يتم الاختيار</span>
+        <div class="selection-box">
+            <select id="category" onchange="showInputs()">
+                <option value="">-- اختر الفئة المراد مقارنتها --</option>
+                <option value="mobiles">موبايلات</option>
+                <option value="laptops">لابتوبات</option>
+                <option value="appliances">أجهزة كهربائية</option>
+            </select>
+
+            <div id="inputs" style="display: none;">
+                <input type="text" id="device1" placeholder="اكتب اسم الموديل الأول (مثل: iphone 15)...">
+                <input type="text" id="device2" placeholder="اكتب اسم الموديل الثاني (مثل: samsung s23)...">
+                <button class="btn-compare" onclick="compare()">عرض المقارنة</button>
             </div>
         </div>
 
-        <!-- زر تنفيذ المقارنة -->
-        <button class="btn-compare" onclick="startComparison()">بدء المقارنة</button>
-    </div>
-
-    <script>
-        // عينة من الأجهزة للتجربة
-        const devices = [
-            { name: "iPhone 15 Pro Max", brand: "Apple", ram: "8 GB", price: "50,000 ج.م" },
-            { name: "Samsung Galaxy S24 Ultra", brand: "Samsung", ram: "12 GB", price: "48,000 ج.م" },
-            { name: "Xiaomi 14 Pro", brand: "Xiaomi", ram: "12 GB", price: "35,000 ج.م" }
-        ];
-
-        let selectedDevices = [];
-
-        function filterDevices() {
-            const query = document.getElementById('search').value.toLowerCase();
-            const resultsDiv = document.getElementById('results');
-            
-            if (query.trim() === "") {
-                resultsDiv.style.display = "none";
-                return;
-            }
-
-            const filtered = devices.filter(d => d.name.toLowerCase().includes(query));
-            
-            if (filtered.length === 0) {
-                resultsDiv.style.display = "none";
-                return;
-            }
-
-            resultsDiv.innerHTML = "";
-            filtered.forEach(device => {
-                const item = document.createElement('div');
-                item.className = "result-item";
-                item.innerText = device.name + " - " + device.price;
-                item.onclick = () => selectDevice(device);
-                resultsDiv.appendChild(item);
-            });
-
-            resultsDiv.style.display = "block";
-        }
-
-        function selectDevice(device) {
-            if (selectedDevices.length >= 2) {
-                selectedDevices = []; // إعادة تعيين لو اخترنا اتنين
-            }
-            selectedDevices.push(device);
-            
-            document.getElementById('search').value = "";
-            document.getElementById('results').style.display = "none";
-            
-            updateUI();
-        }
-
-        function updateUI() {
-            if (selectedDevices[0]) {
-                document.getElementById('slot1').innerHTML = `<h3>${selectedDevices[0].name}</h3><span>${selectedDevices[0].price}</span>`;
-            }
-            if (selectedDevices[1]) {
-                document.getElementById('slot2').innerHTML = `<h3>${selectedDevices[1].name}</h3><span>${selectedDevices[1].price}</span>`;
-            }
-        }
-
-        function startComparison() {
-            if (selectedDevices.length < 2) {
-                alert("الرجاء اختيار جهازين للمقارنة أولاً!");
-                return;
-            }
-            alert(`جاري مقارنة: ${selectedDevices[0].name} مع ${selectedDevices.name}`);
-        }
-    </script>
-
-</body>
-</html>
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>المواصفات</th>
+                    <th id="name1">الجهاز الأول</th>
+                    <th id="name2">الجهاز الثاني</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>السعر</td>
+                    <td id="price1" class="price-row">-</td>
+                    <td id="price2" class="price-row">-</td>
+                </tr>
+                <tr>
+                    <td>المعالج</td>
+                    <td id="cpu1">-</td>
+                    <td id="cpu2">-</td>
