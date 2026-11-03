@@ -23,129 +23,123 @@
     .site-header h1 { font-size: 28px; margin-bottom: 6px; }
     .site-header p { opacity: 0.9; font-size: 15px; }
 
-    .container { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
 
+    /* اختيار الأجهزة */
     .selectors {
       display: flex;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .selector { flex: 1; min-width: 200px; }
-    .selector label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    .selector label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #4b5563; }
     .selector select {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d1d5db;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
       border-radius: 8px;
-      font-size: 15px;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.2s;
+      font-size: 16px;
+      font-weight: bold;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .selector select:focus { border-color: #2563eb; }
-
+    .selector select:focus { border-color: #2563eb; outline: none; background: #fff; }
     .vs {
       font-weight: 800;
       color: #7c3aed;
-      font-size: 18px;
+      font-size: 20px;
       padding: 0 8px;
+      margin-top: 20px;
     }
 
     .options {
       display: flex;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
-    .toggle { display: flex; align-items: center; gap: 8px; font-size: 15px; cursor: pointer; }
+    .toggle { display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; font-weight: 600;}
 
-    /* تحسينات الجدول */
-    .table-wrapper {
-      overflow-x: auto;
+    /* تصميم المقارنة الجديد (متوافق مع الموبايل 100%) */
+    .compare-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .device-headers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #1f2937;
+    }
+    .device-headers div {
       background: #fff;
+      padding: 16px;
       border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-bottom: 4px solid #2563eb;
+    }
+
+    .spec-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
       position: relative;
-      -webkit-overflow-scrolling: touch; /* سحب ناعم على الموبايل */
     }
     
-    /* إضافة تلميح للسحب */
-    .scroll-hint {
-      text-align: center;
-      font-size: 12px;
-      color: #6b7280;
-      margin-top: 8px;
-      display: block;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 600px; /* عشان الجدول ميتكسرش على الموبايل */
-    }
-
-    /* تثبيت الهيدر */
-    thead th {
-      position: sticky;
-      top: 0;
+    .spec-row::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       background: #1f2937;
       color: #fff;
-      padding: 14px 12px;
-      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    .spec-value {
+      background: #fff;
+      padding: 20px 12px;
       text-align: center;
-      z-index: 2;
+      border-radius: 12px;
+      font-size: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* تثبيت عمود المواصفات */
-    thead th:first-child {
-      position: sticky;
-      right: 0;
-      text-align: right;
-      z-index: 3;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    }
-
-    tbody td {
-      padding: 12px;
-      border-bottom: 1px solid #e5e7eb;
-      font-size: 14px;
-      text-align: center;
-    }
-
-    tbody td:first-child {
-      position: sticky;
-      right: 0;
-      text-align: right;
-      font-weight: 600;
-      background: #f9fafb;
-      z-index: 1;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.05);
-    }
-
-    tbody tr:hover td { background: #f0f4ff; }
-    tbody tr:hover td:first-child { background: #e5e7eb; }
-
-    td.diff {
+    /* تمييز الاختلافات */
+    .is-diff {
       background: #fef3c7;
-      font-weight: 600;
       color: #92400e;
-    }
-    
-    tbody tr:hover td.diff {
-      background: #fde68a;
-    }
-
-    .empty-msg {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
+      font-weight: bold;
+      border: 1px solid #fde68a;
     }
 
     @media (max-width: 600px) {
       .vs { display: none; }
       .selector { min-width: 100%; }
+      .spec-value { font-size: 13px; padding: 16px 8px; }
+      .device-headers { font-size: 16px; }
     }
   </style>
 </head>
@@ -177,54 +171,60 @@
       </label>
     </section>
 
-    <section class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>المواصفة</th>
-            <th id="head1">—</th>
-            <th id="head2">—</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+    <section class="compare-container" id="compareContainer">
+      <!-- سيتم ملء هذا الجزء بالبيانات تلقائياً -->
     </section>
-    <span class="scroll-hint">↔️ اسحب الجدول يميناً ويساراً لرؤية كافة التفاصيل</span>
 
   </main>
 
   <script>
+    // البيانات الحقيقية للأجهزة
     const devices = [
       {
-        id: "phone-a",
-        name: "Phone A",
+        id: "iphone15",
+        name: "iPhone 15 Pro Max",
         specs: {
-          screen: "6.1 بوصة OLED",
-          battery: "4000 mAh",
-          weight: "170g",
-          camera: "50MP + 12MP",
+          screen: "6.7 بوصة OLED",
+          battery: "4441 mAh",
+          weight: "221g",
+          camera: "48MP + 12MP + 12MP",
           ram: "8GB",
-          storage: "128GB",
+          storage: "256GB",
           charging: "25W",
+          os: "iOS 17"
+        }
+      },
+      {
+        id: "s24ultra",
+        name: "Samsung S24 Ultra",
+        specs: {
+          screen: "6.8 بوصة AMOLED",
+          battery: "5000 mAh",
+          weight: "232g",
+          camera: "200MP + 50MP + 12MP",
+          ram: "12GB",
+          storage: "256GB",
+          charging: "45W",
           os: "Android 14"
         }
       },
       {
-        id: "phone-b",
-        name: "Phone B",
+        id: "xiaomi14",
+        name: "Xiaomi 14 Pro",
         specs: {
-          screen: "6.4 بوصة AMOLED",
-          battery: "4500 mAh",
-          weight: "185g",
-          camera: "64MP + 8MP",
-          ram: "8GB",
+          screen: "6.73 بوصة AMOLED",
+          battery: "4880 mAh",
+          weight: "223g",
+          camera: "50MP + 50MP + 50MP",
+          ram: "12GB",
           storage: "256GB",
-          charging: "45W",
+          charging: "120W",
           os: "Android 14"
         }
       }
     ];
 
+    // أسماء المواصفات بالعربي
     const specLabels = {
       screen: "الشاشة",
       battery: "البطارية",
@@ -239,10 +239,9 @@
     const sel1 = document.getElementById("device1");
     const sel2 = document.getElementById("device2");
     const diffOnly = document.getElementById("diffOnly");
-    const tableBody = document.getElementById("tableBody");
-    const head1 = document.getElementById("head1");
-    const head2 = document.getElementById("head2");
+    const compareContainer = document.getElementById("compareContainer");
 
+    // تعبئة القوائم المنسدلة
     function fillSelect(select, selectedId) {
       select.innerHTML = "";
       devices.forEach(d => {
@@ -257,40 +256,50 @@
     fillSelect(sel1, devices[0].id);
     fillSelect(sel2, devices[1].id);
 
+    // دالة المقارنة
     function compare() {
       const d1 = devices.find(d => d.id === sel1.value);
       const d2 = devices.find(d => d.id === sel2.value);
       const onlyDiff = diffOnly.checked;
 
-      head1.textContent = d1.name;
-      head2.textContent = d2.name;
-      tableBody.innerHTML = "";
+      compareContainer.innerHTML = "";
 
+      // إضافة أسماء الأجهزة
+      const headerRow = document.createElement("div");
+      headerRow.className = "device-headers";
+      headerRow.innerHTML = `
+        <div>${d1.name}</div>
+        <div>${d2.name}</div>
+      `;
+      compareContainer.appendChild(headerRow);
+
+      // لوب على المواصفات
       Object.keys(specLabels).forEach(key => {
         const v1 = d1.specs[key] ?? "—";
         const v2 = d2.specs[key] ?? "—";
         const isDiff = String(v1) !== String(v2);
 
+        // لو "عرض الاختلافات فقط" مفعل والمواصفة متطابقة، تجاهلها
         if (onlyDiff && !isDiff) return;
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${specLabels[key]}</td>
-          <td class="${isDiff ? "diff" : ""}">${v1}</td>
-          <td class="${isDiff ? "diff" : ""}">${v2}</td>
-        `;
-        tableBody.appendChild(tr);
-      });
+        const row = document.createElement("div");
+        row.className = "spec-row";
+        row.setAttribute("data-label", specLabels[key]); // اسم المواصفة في النص
 
-      if (!tableBody.children.length) {
-        tableBody.innerHTML = `<tr><td colspan="3" class="empty-msg">لا توجد اختلافات بين الجهازين</td></tr>`;
-      }
+        row.innerHTML = `
+          <div class="spec-value ${isDiff ? "is-diff" : ""}">${v1}</div>
+          <div class="spec-value ${isDiff ? "is-diff" : ""}">${v2}</div>
+        `;
+        compareContainer.appendChild(row);
+      });
     }
 
+    // تشغيل الأحداث
     diffOnly.addEventListener("change", compare);
     sel1.addEventListener("change", compare);
     sel2.addEventListener("change", compare);
 
+    // تشغيل المقارنة أول ما الموقع يفتح
     compare();
   </script>
 
