@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparex - مقارنة الأجهزة</title>
+    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -20,4 +21,129 @@
         .selection-box { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
         select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; outline: none; box-sizing: border-box; background-color: #fff; }
         select:focus { border-color: var(--primary); }
-        .btn-action { background-color: var
+        .btn-action { background-color: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        th { background-color: var(--primary); color: white; font-size: 15px; }
+        .error-box { background-color: #fee2e2; color: #991b1b; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 13px; display: none; text-align: right; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Comparex 📱💻</h1>
+            <p>مقارنة الأجهزة من قاعدة البيانات مباشرة</p>
+        </header>
+
+        <div class="selection-box">
+            <label style="display:block; text-align:right; font-weight:bold; margin-bottom:4px;">الجهاز الأول:</label>
+            <select id="device1">
+                <option value="">-- اختر الجهاز الأول --</option>
+            </select>
+
+            <label style="display:block; text-align:right; font-weight:bold; margin-top:12px; margin-bottom:4px;">الجهاز الثاني:</label>
+            <select id="device2">
+                <option value="">-- اختر الجهاز الثاني --</option>
+            </select>
+
+            <button class="btn-action" onclick="compareDevices()">عرض بيانات الأجهزة</button>
+            <div id="errorBox" class="error-box"></div>
+        </div>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>المعلومة</th>
+                    <th id="name1">الجهاز الأول</th>
+                    <th id="name2">الجهاز الثاني</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>الفئة / القسم</td>
+                    <td id="cat1">-</td>
+                    <td id="cat2">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://njsudqbqqjdogletstaz.supabase.co';
+        const SUPABASE_ANON_KEY = 'Sb_publishable_ooZAB5eDYAJBV6UDH1HihA_ejKbyicx';
+        
+        let supabaseClient;
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error("Supabase Init Error:", e);
+        }
+
+        let allDevices = [];
+
+        async function loadDeviceList() {
+            try {
+                if (!supabaseClient) throw new Error("فشل تهيئة عميل Supabase");
+
+                const { data, error } = await supabaseClient
+                    .from('devices')
+                    .select('*');
+
+                if (error) throw error;
+
+                allDevices = data || [];
+                
+                const select1 = document.getElementById('device1');
+                const select2 = document.getElementById('device2');
+
+                select1.innerHTML = '<option value="">-- اختر الجهاز الأول --</option>';
+                select2.innerHTML = '<option value="">-- اختر الجهاز الثاني --</option>';
+
+                allDevices.forEach(device => {
+                    const opt1 = document.createElement('option');
+                    opt1.value = device.id;
+                    opt1.textContent = device.name;
+                    select1.appendChild(opt1);
+
+                    const opt2 = document.createElement('option');
+                    opt2.value = device.id;
+                    opt2.textContent = device.name;
+                    select2.appendChild(opt2);
+                });
+            } catch (err) {
+                console.error("Error loading devices:", err);
+                const errorBox = document.getElementById('errorBox');
+                errorBox.style.display = 'block';
+                errorBox.innerText = "خطأ في الاتصال: " + (err.message || "تأكد من إعدادات قاعدة البيانات");
+            }
+        }
+
+        function compareDevices() {
+            const id1 = document.getElementById('device1').value;
+            const id2 = document.getElementById('device2').value;
+
+            if (!id1 || !id2) {
+                alert("برجاء اختيار الجهازين من القائمة أولاً!");
+                return;
+            }
+
+            const item1 = allDevices.find(d => d.id == id1);
+            const item2 = allDevices.find(d => d.id == id2);
+
+            if (!item1 || !item2) return;
+
+            document.getElementById('name1').innerText = item1.name.toUpperCase();
+            document.getElementById('name2').innerText = item2.name.toUpperCase();
+
+            document.getElementById('cat1').innerText = item1.category || "-";
+            document.getElementById('cat2').innerText = item2.category || "-";
+
+            document.getElementById('resultTable').style.display = "table";
+        }
+
+        // تشغيل التحميل عند فتح الصفحة بشكل آمن
+        window.onload = loadDeviceList;
+    </script>
+</body>
+</html>
