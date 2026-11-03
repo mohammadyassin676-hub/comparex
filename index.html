@@ -1,234 +1,257 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparex - مقارنة الأجهزة</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --success: #16a34a;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --gray: #64748b;
-        }
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; }
-        .container { max-width: 850px; margin: auto; }
-        header { text-align: center; margin-bottom: 20px; }
-        h1 { color: var(--primary); margin-bottom: 5px; }
-        .selection-box { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        
-        .filter-buttons { display: flex; gap: 10px; margin-bottom: 15px; justify-content: center; }
-        .filter-btn { flex: 1; padding: 12px; border: 2px solid var(--primary); background: transparent; color: var(--primary); font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-        .filter-btn.active { background: var(--primary); color: white; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مقارن الأجهزة</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; outline: none; box-sizing: border-box; background-color: #fff; }
-        select:focus { border-color: var(--primary); }
-        .btn-action { background-color: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
-        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-        th { background-color: var(--primary); color: white; font-size: 15px; }
-        
-        .recommendation-box { background: #ecfdf5; border: 2px solid #34d399; color: #065f46; padding: 15px; border-radius: 14px; margin-top: 20px; display: none; text-align: right; }
-        .recommendation-box h3 { margin: 0 0 5px 0; color: var(--success); }
-        .error-box { background-color: #fee2e2; color: #991b1b; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 13px; display: none; text-align: right; }
-    </style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f5f7fa;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    .site-header {
+      text-align: center;
+      padding: 32px 16px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+    }
+    .site-header h1 { font-size: 28px; margin-bottom: 6px; }
+    .site-header p { opacity: 0.9; font-size: 15px; }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+
+    .selectors {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .selector { flex: 1; min-width: 200px; }
+    .selector label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    .selector select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #fff;
+    }
+    .vs {
+      font-weight: 800;
+      color: #7c3aed;
+      font-size: 18px;
+      padding: 0 8px;
+    }
+
+    .options {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+
+    .table-wrapper {
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #1f2937;
+      color: #fff;
+      padding: 14px 12px;
+      font-size: 14px;
+      text-align: center;
+    }
+    thead th:first-child { text-align: right; }
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+      text-align: center;
+    }
+    tbody td:first-child {
+      text-align: right;
+      font-weight: 600;
+      background: #f9fafb;
+    }
+    tbody tr:hover { background: #f0f4ff; }
+
+    td.diff {
+      background: #fef3c7;
+      font-weight: 600;
+      color: #92400e;
+    }
+
+    .empty-msg {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 600px) {
+      .vs { display: none; }
+      .selector { min-width: 100%; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Comparex 📱💻</h1>
-            <p>مقارنة ذكية وشاملة للمواصفات</p>
-        </header>
+  <header class="site-header">
+    <h1>📱 مقارن الأجهزة</h1>
+    <p>اختر جهازين وقارن بينهما بسهولة</p>
+  </header>
 
-        <div class="selection-box">
-            <label style="display:block; text-align:right; font-weight:bold; margin-bottom:8px;">اختر فئة المقارنة أولاً:</label>
-            <div class="filter-buttons">
-                <button class="filter-btn active" id="btnMobile" onclick="filterCategory('موبايلات')">📱 موبايلات</button>
-                <button class="filter-btn" id="btnLaptop" onclick="filterCategory('لابتوب')">💻 لابتوبات</button>
-            </div>
+  <main class="container">
 
-            <label style="display:block; text-align:right; font-weight:bold; margin-bottom:4px;">الجهاز الأول:</label>
-            <select id="device1">
-                <option value="">-- اختر الجهاز الأول --</option>
-            </select>
+    <section class="selectors">
+      <div class="selector">
+        <label>الجهاز الأول</label>
+        <select id="device1"></select>
+      </div>
+      <div class="vs">VS</div>
+      <div class="selector">
+        <label>الجهاز الثاني</label>
+        <select id="device2"></select>
+      </div>
+    </section>
 
-            <label style="display:block; text-align:right; font-weight:bold; margin-top:12px; margin-bottom:4px;">الجهاز الثاني:</label>
-            <select id="device2">
-                <option value="">-- اختر الجهاز الثاني --</option>
-            </select>
+    <section class="options">
+      <label class="toggle">
+        <input type="checkbox" id="diffOnly">
+        <span>عرض الاختلافات فقط</span>
+      </label>
+    </section>
 
-            <button class="btn-action" onclick="compareDevices()">عرض المقارنة الشاملة</button>
-            <div id="errorBox" class="error-box"></div>
-        </div>
+    <section class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>المواصفة</th>
+            <th id="head1">—</th>
+            <th id="head2">—</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </section>
 
-        <div id="recommendationBox" class="recommendation-box">
-            <h3>🏆 خلاصة المقارنة والتوصية الفنية:</h3>
-            <p id="recText">-</p>
-        </div>
+  </main>
 
-        <table id="resultTable">
-            <thead>
-                <tr>
-                    <th>المواصفات</th>
-                    <th id="name1">الجهاز الأول</th>
-                    <th id="name2">الجهاز الثاني</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>الشاشة</td>
-                    <td id="screen1">-</td>
-                    <td id="screen2">-</td>
-                </tr>
-                <tr>
-                    <td>المعالج (CPU)</td>
-                    <td id="cpu1">-</td>
-                    <td id="cpu2">-</td>
-                </tr>
-                <tr>
-                    <td>الرام والمساحة</td>
-                    <td id="ram1">-</td>
-                    <td id="ram2">-</td>
-                </tr>
-                <tr>
-                    <td>الكاميرا</td>
-                    <td id="cam1">-</td>
-                    <td id="cam2">-</td>
-                </tr>
-                <tr>
-                    <td>البطارية</td>
-                    <td id="battery1">-</td>
-                    <td id="battery2">-</td>
-                </tr>
-                <tr>
-                    <td>الفئة</td>
-                    <td id="cat1">-</td>
-                    <td id="cat2">-</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-        const SUPABASE_URL = 'https://njsudqbqqjdogletstaz.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qc3VkcWJxcWpkb2dsZXRzdGF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MDE2MzcsImV4cCI6MjEwOTI3NzYzN30.EKdlXfLK7W1OFtOid5qt89UBn-XzRbGwxbgoR_FOopM';
-        
-        let supabaseClient;
-        try {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (e) {
-            console.error("Supabase Init Error:", e);
+  <script>
+    const devices = [
+      {
+        id: "phone-a",
+        name: "Phone A",
+        specs: {
+          screen: "6.1 بوصة OLED",
+          battery: "4000 mAh",
+          weight: "170g",
+          camera: "50MP + 12MP",
+          ram: "8GB",
+          storage: "128GB",
+          charging: "25W",
+          os: "Android 14"
         }
-
-        let allDevices = [];
-        let currentCategory = 'موبايلات';
-
-        async function loadDeviceList() {
-            try {
-                if (!supabaseClient) throw new Error("فشل تهيئة عميل Supabase");
-
-                const { data, error } = await supabaseClient
-                    .from('devices')
-                    .select('*');
-
-                if (error) throw error;
-
-                allDevices = data || [];
-                populateDropdowns();
-            } catch (err) {
-                console.error("Error loading devices:", err);
-                const errorBox = document.getElementById('errorBox');
-                errorBox.style.display = 'block';
-                errorBox.innerText = "خطأ في الاتصال: " + (err.message || "تأكد من إعدادات قاعدة البيانات");
-            }
+      },
+      {
+        id: "phone-b",
+        name: "Phone B",
+        specs: {
+          screen: "6.4 بوصة AMOLED",
+          battery: "4500 mAh",
+          weight: "185g",
+          camera: "64MP + 8MP",
+          ram: "8GB",
+          storage: "256GB",
+          charging: "45W",
+          os: "Android 14"
         }
+      }
+    ];
 
-        function filterCategory(cat) {
-            currentCategory = cat;
-            
-            document.getElementById('btnMobile').classList.toggle('active', cat === 'موبايلات');
-            document.getElementById('btnLaptop').classList.toggle('active', cat.includes('لابتوب'));
+    const specLabels = {
+      screen: "الشاشة",
+      battery: "البطارية",
+      weight: "الوزن",
+      camera: "الكاميرا",
+      ram: "الذاكرة العشوائية",
+      storage: "التخزين",
+      charging: "الشحن",
+      os: "نظام التشغيل"
+    };
 
-            document.getElementById('resultTable').style.display = "none";
-            document.getElementById('recommendationBox').style.display = "none";
+    const sel1 = document.getElementById("device1");
+    const sel2 = document.getElementById("device2");
+    const diffOnly = document.getElementById("diffOnly");
+    const tableBody = document.getElementById("tableBody");
+    const head1 = document.getElementById("head1");
+    const head2 = document.getElementById("head2");
 
-            populateDropdowns();
-        }
+    function fillSelect(select, selectedId) {
+      select.innerHTML = "";
+      devices.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d.id;
+        opt.textContent = d.name;
+        if (d.id === selectedId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
 
-        function populateDropdowns() {
-            const select1 = document.getElementById('device1');
-            const select2 = document.getElementById('device2');
+    fillSelect(sel1, devices[0].id);
+    fillSelect(sel2, devices[1].id);
 
-            select1.innerHTML = '<option value="">-- اختر الجهاز الأول --</option>';
-            select2.innerHTML = '<option value="">-- اختر الجهاز الثاني --</option>';
+    function compare() {
+      const d1 = devices.find(d => d.id === sel1.value);
+      const d2 = devices.find(d => d.id === sel2.value);
+      const onlyDiff = diffOnly.checked;
 
-            const filteredDevices = allDevices.filter(device => 
-                device.category && device.category.toLowerCase().includes(currentCategory.toLowerCase())
-            );
+      head1.textContent = d1.name;
+      head2.textContent = d2.name;
+      tableBody.innerHTML = "";
 
-            filteredDevices.forEach(device => {
-                const opt1 = document.createElement('option');
-                opt1.value = device.id;
-                opt1.textContent = device.name;
-                select1.appendChild(opt1);
+      Object.keys(specLabels).forEach(key => {
+        const v1 = d1.specs[key] ?? "—";
+        const v2 = d2.specs[key] ?? "—";
+        const isDiff = String(v1) !== String(v2);
 
-                const opt2 = document.createElement('option');
-                opt2.value = device.id;
-                opt2.textContent = device.name;
-                select2.appendChild(opt2);
-            });
-        }
+        if (onlyDiff && !isDiff) return;
 
-        function compareDevices() {
-            const id1 = document.getElementById('device1').value;
-            const id2 = document.getElementById('device2').value;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${specLabels[key]}</td>
+          <td class="${isDiff ? "diff" : ""}">${v1}</td>
+          <td class="${isDiff ? "diff" : ""}">${v2}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
 
-            if (!id1 || !id2) {
-                alert("برجاء اختيار الجهازين من القائمة للمقارنة!");
-                return;
-            }
+      if (!tableBody.children.length) {
+        tableBody.innerHTML = `<tr><td colspan="3" class="empty-msg">لا توجد اختلافات بين الجهازين</td></tr>`;
+      }
+    }
 
-            const item1 = allDevices.find(d => d.id == id1);
-            const item2 = allDevices.find(d => d.id == id2);
+    diffOnly.addEventListener("change", compare);
+    sel1.addEventListener("change", compare);
+    sel2.addEventListener("change", compare);
 
-            if (!item1 || !item2) return;
+    compare();
+  </script>
 
-            document.getElementById('name1').innerText = item1.name.toUpperCase();
-            document.getElementById('name2').innerText = item2.name.toUpperCase();
-
-            document.getElementById('screen1').innerText = item1.screen || "-";
-            document.getElementById('screen2').innerText = item2.screen || "-";
-
-            document.getElementById('cpu1').innerText = item1.cpu || "-";
-            document.getElementById('cpu2').innerText = item2.cpu || "-";
-
-            document.getElementById('ram1').innerText = item1.ram || "-";
-            document.getElementById('ram2').innerText = item2.ram || "-";
-
-            document.getElementById('cam1').innerText = item1.cam || "-";
-            document.getElementById('cam2').innerText = item2.cam || "-";
-
-            document.getElementById('battery1').innerText = item1.battery || "-";
-            document.getElementById('battery2').innerText = item2.battery || "-";
-
-            document.getElementById('cat1').innerText = item1.category || "-";
-            document.getElementById('cat2').innerText = item2.category || "-";
-
-            let recommendation = `بالمقارنة التقنية بين <strong>${item1.name.toUpperCase()}</strong> و <strong>${item2.name.toUpperCase()}</strong>:`;
-            recommendation += ` يتميز كل جهاز بقوة أداء تخدم احتياجات مختلفة. راجع تفاصيل المعالج والشاشة والكاميرا بالأعلى لتحديد الجهاز الذي يلبي احتياجاتك بدقة وسلاسة.`;
-            
-            document.getElementById('recText').innerHTML = recommendation;
-
-            document.getElementById('resultTable').style.display = "table";
-            document.getElementById('recommendationBox').style.display = "block";
-        }
-
-        window.onload = loadDeviceList;
-    </script>
 </body>
 </html>
