@@ -54,124 +54,10 @@ td.win{background:var(--win);color:var(--wint);font-weight:700}
   <div id="out"></div>
 </div>
 <script>
-// ===== البيانات (أرقام تقريبية) — perf = Geekbench 6 multi-core تقريبي =====
-// موبايل: اسم، بدائل، سنة، شاشة"، Hz، perf، معالج، رام، تخزين، كاميرا MP، بطارية mAh، شحن W، وزن جم
-const SM="سامسونج جالاكسي galaxy",AP="ايفون ابل apple",XI="شاومي xiaomi",RM="ريلمي realme",OP="اوبو oppo",VV="فيفو vivo",HN="هونر honor",IN="انفينكس infinix",TC="تكنو tecno",PX="جوجل بيكسل pixel",ON="ون بلس oneplus";
-const S8E="Snapdragon 8 Elite",S83="Snapdragon 8 Gen 3",S82="Snapdragon 8 Gen 2",S81="Snapdragon 8 Gen 1",A18="A18",A18P="A18 Pro",A17="A17 Pro",A16="A16 Bionic",A15="A15 Bionic",G99="Helio G99";
-const M = [
-// Samsung
-["Samsung S25 Ultra",SM+" الترا s25",2025,6.9,120,9500,S8E,12,256,200,5000,45,218],
-["Samsung S25+",SM+" بلس s25",2025,6.7,120,9500,S8E,12,256,50,4900,45,190],
-["Samsung S25",SM+" s25",2025,6.2,120,9500,S8E,12,128,50,4000,25,162],
-["Samsung S24 Ultra",SM+" الترا s24",2024,6.8,120,7000,S83,12,256,200,5000,45,232],
-["Samsung S24+",SM+" بلس s24",2024,6.7,120,6700,"Exynos 2400",12,256,50,4900,45,196],
-["Samsung S24",SM+" s24",2024,6.2,120,6700,"Exynos 2400",8,128,50,4000,25,167],
-["Samsung S23 Ultra",SM+" الترا s23",2023,6.8,120,5200,S82,12,256,200,5000,45,234],
-["Samsung S23+",SM+" بلس s23",2023,6.6,120,5200,S82,8,256,50,4700,45,196],
-["Samsung S23",SM+" s23",2023,6.1,120,5200,S82,8,128,50,3900,25,168],
-["Samsung S22 Ultra",SM+" الترا s22",2022,6.8,120,3500,S81,12,256,108,5000,45,229],
-["Samsung S22",SM+" s22",2022,6.1,120,3500,S81,8,128,50,3700,25,167],
-["Samsung A56",SM+" a56 ايه",2025,6.7,120,3300,"Exynos 1580",8,128,50,5000,45,198],
-["Samsung A55",SM+" a55 ايه",2024,6.6,120,3000,"Exynos 1480",8,128,50,5000,25,213],
-["Samsung A54",SM+" a54 ايه",2023,6.4,120,2900,"Exynos 1380",8,128,50,5000,25,202],
-["Samsung A35",SM+" a35 ايه",2024,6.6,120,2200,"Exynos 1380",8,128,50,5000,25,209],
-["Samsung A34",SM+" a34 ايه",2023,6.6,120,2300,"Dimensity 1080",6,128,48,5000,25,199],
-["Samsung A25",SM+" a25 ايه",2024,6.5,120,1900,"Exynos 1280",6,128,50,5000,25,197],
-["Samsung A15",SM+" a15 ايه",2023,6.5,90,1900,G99,4,128,50,5000,25,200],
-["Samsung Z Fold 6",SM+" زد فولد fold",2024,7.6,120,7000,S83,12,256,50,4400,25,239],
-["Samsung Z Flip 6",SM+" زد فليب flip",2024,6.7,120,7000,S83,12,256,50,4000,25,187],
-// Apple
-["iPhone 16 Pro Max",AP+" 16 برو ماكس",2024,6.9,120,8200,A18P,8,256,48,4685,27,227],
-["iPhone 16 Pro",AP+" 16 برو",2024,6.3,120,8200,A18P,8,128,48,3582,27,199],
-["iPhone 16 Plus",AP+" 16 بلس",2024,6.7,60,8000,A18,8,128,48,4674,25,199],
-["iPhone 16",AP+" 16",2024,6.1,60,8000,A18,8,128,48,3561,25,170],
-["iPhone 16e",AP+" 16e",2025,6.1,60,7800,A18,8,128,48,4005,20,167],
-["iPhone 15 Pro Max",AP+" 15 برو ماكس",2023,6.7,120,7200,A17,8,256,48,4441,27,221],
-["iPhone 15 Pro",AP+" 15 برو",2023,6.1,120,7200,A17,8,128,48,3274,27,187],
-["iPhone 15 Plus",AP+" 15 بلس",2023,6.7,60,5400,A16,6,128,48,4383,20,201],
-["iPhone 15",AP+" 15",2023,6.1,60,5400,A16,6,128,48,3349,20,171],
-["iPhone 14 Pro Max",AP+" 14 برو ماكس",2022,6.7,120,5400,A16,6,128,48,4323,20,240],
-["iPhone 14 Pro",AP+" 14 برو",2022,6.1,120,5400,A16,6,128,48,3200,20,206],
-["iPhone 14 Plus",AP+" 14 بلس",2022,6.7,60,4700,A15,6,128,12,4325,20,203],
-["iPhone 14",AP+" 14",2022,6.1,60,4700,A15,6,128,12,3279,20,172],
-["iPhone 13 Pro",AP+" 13 برو",2021,6.1,120,4700,A15,6,128,12,3095,20,204],
-["iPhone 13",AP+" 13",2021,6.1,60,4600,A15,4,128,12,3240,20,174],
-["iPhone 12",AP+" 12",2020,6.1,60,3900,"A14 Bionic",4,64,12,2815,20,164],
-["iPhone 11",AP+" 11",2019,6.1,60,2700,"A13 Bionic",4,64,12,3110,18,194],
-// Xiaomi / Redmi / Poco
-["Xiaomi 15 Ultra",XI+" 15 الترا",2025,6.73,120,9500,S8E,16,512,50,5410,90,226],
-["Xiaomi 14T Pro",XI+" 14t برو",2024,6.67,144,6500,"Dimensity 9300+",12,256,50,5000,120,209],
-["Xiaomi 14T",XI+" 14t",2024,6.67,144,5200,"Dimensity 8300 Ultra",12,256,50,5000,67,195],
-["Xiaomi 14",XI+" 14",2024,6.36,120,7000,S83,12,256,50,4610,90,188],
-["Xiaomi 13T",XI+" 13t",2023,6.67,144,3800,"Dimensity 8200 Ultra",12,256,50,5000,67,193],
-["Redmi Note 13 Pro+",XI+" ريدمي redmi نوت note 13 برو بلس",2024,6.67,120,3700,"Dimensity 7200 Ultra",8,256,200,5000,120,204],
-["Redmi Note 13 Pro",XI+" ريدمي redmi نوت note 13 برو",2024,6.67,120,2800,"Snapdragon 7s Gen 2",8,256,200,5100,67,187],
-["Redmi Note 13",XI+" ريدمي redmi نوت note 13",2024,6.67,120,1400,"Snapdragon 685",6,128,108,5000,33,188],
-["Redmi Note 12 Pro",XI+" ريدمي redmi نوت note 12 برو",2022,6.67,120,2600,"Dimensity 1080",8,128,50,5000,67,187],
-["Redmi 13C",XI+" ريدمي redmi 13c",2023,6.74,90,1300,"Helio G85",4,128,50,5000,18,192],
-["Poco F6",XI+" بوكو poco f6",2024,6.67,120,5500,"Snapdragon 8s Gen 3",8,256,50,5000,90,179],
-["Poco F5",XI+" بوكو poco f5",2023,6.67,120,4200,"Snapdragon 7+ Gen 2",8,256,64,5000,67,181],
-["Poco X6 Pro",XI+" بوكو poco x6 برو",2024,6.67,120,4200,"Dimensity 8300 Ultra",8,256,64,5000,67,186],
-["Poco X6",XI+" بوكو poco x6",2024,6.67,120,2700,"Snapdragon 7s Gen 2",8,256,64,5100,67,181],
-["Poco M6 Pro",XI+" بوكو poco m6 برو",2024,6.79,90,1900,"Helio G99 Ultra",6,128,50,5000,33,199],
-// Realme
-["Realme GT 6",RM+" جي تي gt6",2024,6.78,120,5500,"Snapdragon 8s Gen 3",12,256,50,5500,120,199],
-["Realme 12 Pro+",RM+" 12 برو بلس",2024,6.7,120,2900,"Snapdragon 7s Gen 2",8,256,50,5000,67,196],
-["Realme 12 Pro",RM+" 12 برو",2024,6.7,120,2000,"Snapdragon 6 Gen 1",8,256,50,5000,67,190],
-["Realme 11 Pro",RM+" 11 برو",2023,6.7,120,2900,"Dimensity 7050",8,256,100,5000,67,183],
-["Realme C67",RM+" c67",2024,6.72,90,1400,"Snapdragon 685",6,128,108,5000,33,190],
-// Oppo / Vivo / Honor
-["Oppo Find X8 Pro",OP+" فايند find x8",2024,6.78,120,8500,"Dimensity 9400",16,512,50,5910,80,215],
-["Oppo Reno 12 Pro",OP+" رينو reno 12 برو",2024,6.7,120,2800,"Dimensity 7300 Energy",12,256,50,5000,80,180],
-["Oppo Reno 11",OP+" رينو reno 11",2024,6.7,120,3900,"Dimensity 8200",8,256,50,5000,67,184],
-["Oppo Reno 11F",OP+" رينو reno 11f",2024,6.7,120,2300,"Dimensity 7050",8,256,64,5000,67,177],
-["Vivo X200 Pro",VV+" x200 برو",2024,6.78,120,8500,"Dimensity 9400",16,512,50,6000,90,223],
-["Vivo V40",VV+" v40",2024,6.78,120,3300,"Snapdragon 7 Gen 3",8,256,50,5500,80,190],
-["Vivo V30",VV+" v30",2024,6.78,120,3300,"Snapdragon 7 Gen 3",8,256,50,5000,80,188],
-["Honor Magic6 Pro",HN+" ماجيك magic 6 برو",2024,6.8,120,7000,S83,12,512,50,5600,80,225],
-["Honor 200 Pro",HN+" 200 برو",2024,6.78,120,5500,"Snapdragon 8s Gen 3",12,512,50,5200,100,199],
-["Honor X9b",HN+" x9b",2024,6.78,120,2000,"Snapdragon 6 Gen 1",8,256,108,5800,35,185],
-// Infinix / Tecno
-["Infinix Note 40 Pro",IN+" نوت note 40 برو",2024,6.78,120,1900,G99,8,256,108,5000,70,195],
-["Infinix Hot 40 Pro",IN+" هوت hot 40 برو",2023,6.78,120,1900,G99,8,256,108,5000,18,203],
-["Tecno Camon 30",TC+" كامون camon 30",2024,6.78,120,1900,G99,8,256,50,5000,70,196],
-["Tecno Spark 20 Pro",TC+" سبارك spark 20 برو",2024,6.78,120,1900,G99,8,256,108,5000,33,195],
-// Pixel / OnePlus
-["Google Pixel 9 Pro",PX+" 9 برو",2024,6.3,120,4600,"Tensor G4",16,128,50,4700,27,199],
-["Google Pixel 9",PX+" 9",2024,6.3,120,4600,"Tensor G4",12,128,50,4700,27,198],
-["Google Pixel 8 Pro",PX+" 8 برو",2023,6.7,120,4400,"Tensor G3",12,128,50,5050,30,213],
-["Google Pixel 8",PX+" 8",2023,6.2,120,4400,"Tensor G3",8,128,50,4575,27,187],
-["Google Pixel 8a",PX+" 8a",2024,6.1,120,4300,"Tensor G3",8,128,64,4492,18,188],
-["OnePlus 13",ON+" 13",2025,6.82,120,9500,S8E,12,256,50,6000,100,213],
-["OnePlus 12",ON+" 12",2024,6.82,120,7000,S83,12,256,50,5400,100,220],
-["OnePlus Nord 4",ON+" نورد nord 4",2024,6.74,120,4000,"Snapdragon 7+ Gen 3",12,256,50,5500,100,199],
-["OnePlus Nord CE4",ON+" نورد nord ce4",2024,6.7,120,3000,"Snapdragon 7 Gen 3",8,128,50,5500,100,186]
-].map(r=>({name:r[0],alias:r[1],year:r[2],inch:r[3],hz:r[4],perf:r[5],cpu:r[6],ram:r[7],sto:r[8],cam:r[9],bat:r[10],w:r[11],g:r[12]}));
-// لابتوب: اسم، بدائل، سنة، شاشة"، Hz، perf، معالج، رام، SSD، بطارية Wh، وزن كجم
-const L = [
-["MacBook Air M4","ماك بوك ماك ابل apple ايير air",2025,13.6,60,14500,"Apple M4",16,256,53.8,1.24],
-["MacBook Air M3","ماك بوك ماك ابل apple ايير air",2024,13.6,60,11800,"Apple M3",8,256,52.6,1.24],
-["MacBook Air M2","ماك بوك ماك ابل apple ايير air",2022,13.6,60,8900,"Apple M2",8,256,52.6,1.24],
-["MacBook Air M1","ماك بوك ماك ابل apple ايير air",2020,13.3,60,7500,"Apple M1",8,256,49.9,1.29],
-["MacBook Pro 14 M4 Pro","ماك بوك ماك ابل apple برو pro",2024,14.2,120,22000,"Apple M4 Pro",24,512,72.4,1.62],
-["Dell XPS 13","ديل dell اكس بي اس",2023,13.4,60,9000,"Core i7-1360P",16,512,51,1.17],
-["Dell XPS 15","ديل dell اكس بي اس",2023,15.6,60,13500,"Core i7-13700H",16,512,86,1.86],
-["Dell Inspiron 15","ديل dell انسبايرون",2023,15.6,120,6500,"Core i5-1235U",8,512,54,1.65],
-["HP Pavilion 15","اتش بي hp بافيليون",2023,15.6,60,7000,"Core i5-1335U",8,512,41,1.7],
-["HP Spectre x360 14","اتش بي hp سبيكتر",2024,14,120,11500,"Core Ultra 7 155H",16,1024,68,1.4],
-["HP Victus 15","اتش بي hp فيكتوس جيمنج",2023,15.6,144,8500,"Core i5-13420H",16,512,70,2.3],
-["Lenovo IdeaPad Slim 3","لينوفو lenovo ايديا باد",2023,15.6,60,5500,"Ryzen 5 7520U",8,512,38,1.6],
-["Lenovo LOQ 15","لينوفو lenovo جيمنج",2024,15.6,144,11500,"Core i5-13450HX",16,512,57,2.4],
-["Lenovo Legion 5","لينوفو lenovo ليجن جيمنج",2023,15.6,165,12500,"Ryzen 7 7840HS",16,512,80,2.4],
-["ThinkPad X1 Carbon","لينوفو lenovo ثينك باد",2023,14,60,8000,"Core i7-1355U",16,512,57,1.12],
-["ASUS Vivobook 15","اسوس asus فيفو بوك",2023,15.6,60,7000,"Core i5-1335U",8,512,42,1.7],
-["ASUS Zenbook 14 OLED","اسوس asus زين بوك",2024,14,120,11500,"Core Ultra 7 155H",16,1024,75,1.2],
-["ASUS TUF A15","اسوس asus تاف جيمنج",2023,15.6,144,9500,"Ryzen 7 7735HS",16,512,90,2.3],
-["ASUS ROG Zephyrus G14","اسوس asus روج جيمنج",2023,14,165,12500,"Ryzen 9 7940HS",16,1024,73,1.65],
-["Acer Aspire 5","ايسر acer اسباير",2023,15.6,60,7000,"Core i5-1335U",8,512,50,1.8],
-["Acer Nitro 5","ايسر acer نيترو جيمنج",2023,15.6,144,9500,"Core i5-12500H",16,512,57,2.5],
-["MSI Katana 15","ام اس اي msi كاتانا جيمنج",2023,15.6,144,11000,"Core i7-13620H",16,512,53.5,2.25]
-].map(r=>({name:r[0],alias:r[1],year:r[2],inch:r[3],hz:r[4],perf:r[5],cpu:r[6],ram:r[7],sto:r[8],wh:r[9],kg:r[10]}));
+// ===== الاتصال بقاعدة البيانات (Supabase) =====
+const SB_URL="https://njsudqbqqjdogletstaz.supabase.co";
+const SB_KEY="sb_publishable_ooZAB5eDYAJBV6UDH1HihA_ejKbyicx"; // مفتاح عام، آمن للاستخدام هنا
+const M=[],L=[]; // بتتملي من الجدول devices
 
 const n=(v,lo,hi)=>Math.max(0,Math.min(1,(v-lo)/(hi-lo)));
 const CATS={
@@ -225,27 +111,4 @@ function render(){
   const sa=scoreOf(A),sb=scoreOf(B),ta=Math.round(sa.total),tb=Math.round(sb.total);
   let v;
   if(Math.abs(ta-tb)<3){
-    v=`<div class="w">متقاربين جداً 🤝</div><p>الفرق بين الجهازين (${ta} مقابل ${tb}) صغير، فالاختيار يعتمد على أولوياتك.</p>`;
-  }else{
-    const aw=ta>tb,W=aw?A:B,Lo=aw?B:A,SW=aw?sa:sb,SL=aw?sb:sa;
-    const diffs=SW.ax.map((x,i)=>({l:x.l,d:x.v-SL.ax[i].v}));
-    const lead=diffs.filter(x=>x.d>=8).sort((x,y)=>y.d-x.d).slice(0,2).map(x=>x.l);
-    const back=diffs.filter(x=>x.d<=-8).sort((x,y)=>x.d-y.d)[0];
-    v=`<div class="w">✅ التفضيل: ${W.name}</div><p>حصل على <b>${Math.max(ta,tb)}</b> من 100 مقابل <b>${Math.min(ta,tb)}</b> لـ ${Lo.name}.</p>`+
-      (lead.length?`<p>أقوى في: ${lead.join(" و")}.</p>`:"")+
-      (back?`<p>لكن ${Lo.name} أفضل في ${back.l}.</p>`:"");
-  }
-  const cmp=C.rows.map(([lb,f,g,low])=>{
-    const x=g(A),y=g(B);let wa="",wb="";
-    if(x!==y){const aw=low?x<y:x>y;aw?wa="win":wb="win"}
-    return `<tr><td>${lb}</td><td class="${wa}">${f(A)}</td><td class="${wb}">${f(B)}</td></tr>`}).join("");
-  const bars=sa.ax.map((x,i)=>{const y=sb.ax[i];return `<div class="ax"><div class="l"><span>${Math.round(x.v)}</span><b>${x.l}</b><span>${Math.round(y.v)}</span></div><div class="bar"><i class="ba" style="flex:${x.v+1}"></i><i class="bb" style="flex:${y.v+1}"></i></div></div>`}).join("");
-  $("out").innerHTML=`
-  <div class="card verdict"><h2>التفضيل حسب الأرقام</h2>${v}<div class="fine">التقييم محسوب من المواصفات فقط (الأداء، البطارية، الشاشة، الذاكرة...) بأوزان مختلفة لكل محور، ومش بيقيس جودة الصورة أو تجربة الاستخدام الفعلية.</div></div>
-  <div class="card"><div class="scores"><div><div class="big sa">${ta}</div><div>${A.name}</div></div><div><div class="big sb">${tb}</div><div>${B.name}</div></div></div>${bars}</div>
-  <div class="card tw"><table><thead><tr><th></th><th class="a">${A.name}</th><th class="b">${B.name}</th></tr></thead><tbody>${cmp}</tbody></table><div class="fine">الأرقام تقريبية، والخانة الخضراء = الأفضل في الصف.</div></div>`;
-}
-setCat();
-</script>
-</body>
-</html>
+    v=`<div class="w">متقاربين جداً 🤝</div><p>الفرق بين الجهازين (${ta} مقابل ${tb}) صغير، فالاختيار يعتمد على أولوياتك.
